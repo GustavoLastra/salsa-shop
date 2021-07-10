@@ -33,11 +33,11 @@ public class ItemControllerTest {
 	public void setup(){
 		itemController = new ItemController(itemRepositoryMocked);
 		testItem = this.getTestItem();
-		List<Item> itemList = new ArrayList<>();
-		itemList.add(testItem);
-		Mockito.when(itemRepositoryMocked.findAll()).thenReturn(itemList);
+		List<Item> items = new ArrayList<>();
+		items.add(testItem);
+		Mockito.when(itemRepositoryMocked.findAll()).thenReturn(items);
 		Mockito.when(itemRepositoryMocked.findById(testItem.getId())).thenReturn(Optional.of(testItem));
-		Mockito.when(itemRepositoryMocked.findByName(testItem.getName())).thenReturn(itemList);
+		Mockito.when(itemRepositoryMocked.findByName(testItem.getName())).thenReturn(items);
 	}
 
 
