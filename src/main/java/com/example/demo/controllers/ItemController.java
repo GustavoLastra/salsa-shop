@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,8 @@ import com.example.demo.model.persistence.repositories.ItemRepository;
 public class ItemController {
 
 	private final ItemRepository itemRepository;
+	public static final Logger log = LoggerFactory.getLogger(UserController.class);
+
 
 	public ItemController(ItemRepository itemRepository) {
 		this.itemRepository = itemRepository;
@@ -35,8 +39,13 @@ public class ItemController {
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Item>> getItemsByName(@PathVariable String name) {
 		List<Item> items = itemRepository.findByName(name);
-		return items == null || items.isEmpty() ? ResponseEntity.notFound().build()
-				: ResponseEntity.ok(items);
+		if (items == null || items.isEmpty()) {
+			log.info("Items founded by name: ", name);
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(items);
+		}
+
 
 	}
 

@@ -1,10 +1,11 @@
 package com.example.demo.controllers;
-
 import com.example.demo.model.persistence.entities.Cart;
 import com.example.demo.model.persistence.entities.User;
 import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.dto.CreateUserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,8 @@ public class UserController {
 	private final UserRepository userRepository;
 	private final CartRepository cartRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	public static final Logger log = LoggerFactory.getLogger(UserController.class);
+
 
 	public UserController(UserRepository userRepository, CartRepository cartRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userRepository = userRepository;
@@ -32,7 +35,13 @@ public class UserController {
 	@GetMapping("/{username}")
 	public ResponseEntity<User> findByUserName(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
-		return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
+		if (user == null) {
+			log.warn("User could not be founded by name: ", username);
+			return ResponseEntity.notFound().build();
+		} else {
+			log.info("User founded by name: ", username);
+			return ResponseEntity.ok(user);
+		}
 	}
 
 	@PostMapping("/create")
@@ -43,10 +52,12 @@ public class UserController {
 		cartRepository.save(cart);
 		user.setCart(cart);
 		if (createUserDto.getPassword().length()<7 || !createUserDto.getPassword().equals(createUserDto.getConfirmPassword()) ) {
+			log.warn("User passwords could not be confirmed: ", createUserDto.getUsername());
 			return ResponseEntity.badRequest().build();
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserDto.getPassword()));
 		userRepository.save(user);
+		log.info("User created: ",  createUserDto.getUsername());
 		return ResponseEntity.ok(user);
 	}
 
