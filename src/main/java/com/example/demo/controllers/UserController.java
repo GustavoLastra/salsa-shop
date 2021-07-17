@@ -39,7 +39,7 @@ public class UserController {
 			log.warn("User could not be founded by name: ", username);
 			return ResponseEntity.notFound().build();
 		} else {
-			log.info("User founded by name: ", username);
+			log.info("User founded by name");
 			return ResponseEntity.ok(user);
 		}
 	}
@@ -57,7 +57,7 @@ public class UserController {
 		}
 		user.setPassword(bCryptPasswordEncoder.encode(createUserDto.getPassword()));
 		userRepository.save(user);
-		log.info("User created: ",  createUserDto.getUsername());
+		log.info("User created",  "createUserDto.getUsername()");
 		return ResponseEntity.ok(user);
 	}
 
