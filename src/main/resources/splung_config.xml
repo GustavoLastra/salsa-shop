@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <Appender name="java" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+        <url>https://localhost:8088</url>
+        <token>e37e5d6a-7552-4f35-a56a-6dac1a816e7e</token>
+        <disableCertificateValidation>true</disableCertificateValidation>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg</pattern>
+        </layout>
+    </Appender>
+
+    <logger name ="java" level="INFO">
+        <appender-ref ref="java" />
+    </logger>
+
+</configuration>
